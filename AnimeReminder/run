@@ -1,0 +1,2 @@
+#!/bin/sh
+nohup python /home/shiraz/Programs/AnimeReminder/main.py >>/home/shiraz/Programs/AnimeReminder/a.out
