@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, flash
 from requests.exceptions import ConnectionError
 
 from AnimeTorrents.AnimeTorrentsBackend import Anime
-from Utils import HtmlBuilder
+from Utils.HtmlBuilder import HtmlBuilder
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -34,11 +34,11 @@ def episode_list():
             clarities = {clarity: link for clarity, link in episodes[i].items()
                          if clarity != 'date' and clarity != 'episode_number'}
             for clarity, link in clarities.items():
-                text.open_tag('div', {'class': 'col-xs-3'})
-                text.open_tag('a', {'href': link})
+                # text.open_tag('div', {'class': 'col-xs-3'})
+                text.open_tag('a', {'class': 'col-xs-3', 'href': link})
                 text.open_tag('button', {'type': 'button', 'class': 'btn btn-magnet btn-block'})
                 text.add_data(clarity)
-                text.close_tag()
+                # text.close_tag()
                 text.close_tag()
                 text.close_tag()
             text.close_tag()
@@ -69,10 +69,35 @@ def main():
 @app.route('/refresh')
 def refresh():
     try:
-        Anime.update_all_episodes()
-        flash('Successfully refreshed')
+        updates = Anime.update_all_episodes()
+        animes = Anime.use_page_source()
+        text = HtmlBuilder()
+        text.open_tag('div', {'class': 'container-fluid'})
+        for anime, no_of_episodes in updates.items():
+            if no_of_episodes != 0:
+                episodes = animes[anime][-no_of_episodes:]
+                for i in range(len(episodes)):
+                    text.open_tag('div', {'class': 'panel row'})
+                    text.open_tag('div', {'class': 'episode-btn col-xs-3'})
+                    text.open_tag('p', {'class': 'text-center', 'style': 'margin: 10px;'})
+                    text.add_data(anime + episodes[i]['episode_number'])
+                    text.close_tag()
+                    text.close_tag()
+                    clarities = {clarity: link for clarity, link in episodes[i].items()
+                                 if clarity != 'date' and clarity != 'episode_number'}
+                    for clarity, link in clarities.items():
+                        # text.open_tag('div', {'class': 'col-xs-3'})
+                        text.open_tag('a', {'class': 'col-xs-3', 'href': link})
+                        text.open_tag('button', {'type': 'button', 'class': 'btn btn-magnet btn-block'})
+                        text.add_data(clarity)
+                        # text.close_tag()
+                        text.close_tag()
+                        text.close_tag()
+                    text.close_tag()
+        flash(text.get_html())
+        flash('<h4 class="text-center" id="hideMe">Successfully refreshed</h4>')
     except ConnectionError:
-        flash('No internet connection')
+        flash('<h4 class="text-center" id="hideMe">No internet connection</h4>')
     return redirect('/')
 
 
@@ -117,4 +142,4 @@ def add_anime():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run('0.0.0.0')

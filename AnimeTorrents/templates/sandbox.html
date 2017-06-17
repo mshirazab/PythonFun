@@ -7,28 +7,34 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="../static/sandbox.css?version=4" type="text/css">
-    <script src="../static/sandbox.js" ></script>
+    <link rel="stylesheet" href="../static/sandbox.css?version=10" type="text/css">
+    <script src="../static/sandbox.js"></script>
     <title>{{title|safe}}</title>
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="text-center">Anime torrents</h1>
-        <form action="/search" method="POST">
-            <div class="col-*-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." name="Keyword">
-                    <span class="input-group-btn">
+<div class="container">
+    <h1 class="text-center">Anime torrents</h1>
+    <form action="/search" method="POST">
+        <div class="col-*-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for..." name="Keyword">
+                <span class="input-group-btn">
                     <button class="btn btn-info" type="submit">Go!</button>
                 </span>
-                </div>
             </div>
-        </form>
-        {{refresh|safe}} {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
-        <h4 class="text-center" id="hideMe">{{ message }}</h4>
-        {% endfor %} {% endif %} {% endwith %} {% block body %}{% endblock %} {{animes|safe}}
-    </div>
+        </div>
+    </form>
+    {{refresh|safe}}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message|safe }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {{animes|safe}}
+</div>
 </body>
 
 </html>

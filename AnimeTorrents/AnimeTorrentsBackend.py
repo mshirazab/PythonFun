@@ -101,19 +101,27 @@ class Anime(object):
             organiser[anime_name].insert(0, current_episode_data)
         with open(Anime.__file_name, 'r') as fp:
             data = load(fp)
+            try:
+                old_size = len(data['anime'][anime_name])
+            except:
+                old_size = 0
             data['anime'][anime_name] = sorted(organiser[anime_name], key=lambda k: k['episode_number'])
         # data['anime'][anime_name] = Anime.__json_sort(organiser[anime_name])
         with open(Anime.__file_name, 'w') as fp:
             dump(data, fp)
         print IO.Message.updated, anime_name
+        return {anime_name: len(organiser[anime_name]) - old_size}
 
     @staticmethod
     def update_all_episodes():
         with open(Anime.__file_name, 'r') as fp:
             data = load(fp)
         links = data['links'].keys()
+        data = {}
         for link in links:
-            Anime.update_episodes(link)
+            temp = Anime.update_episodes(link)
+            data[temp.keys()[0]] = temp.values()[0]
+        return data
 
     @staticmethod
     def use_page_source():
