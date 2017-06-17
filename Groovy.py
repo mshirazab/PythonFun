@@ -8,12 +8,7 @@ from os import listdir, remove
 
 groove_search_link = 'https://music.xboxlive.com/1/content/music/search'
 access_token_link = 'https://login.live.com/accesstoken.srf'
-access_token = 'EgBsAQMAAAAEgAAADAABHmaH0AnYipuAMgPuo/kitYUAPAneGSdmbAEvnZPiO+cOi6aWpPF9LTIyIn2'
-access_token += '4oJpQRiX2cDJM48eHwIQlHDXd4x72P4dDslVpQceuSEQyTnx4c9CFG9qRxBdUv+4CI/ILOnss53d7rk'
-access_token += 'bgwh1OhJKMjFurDNWZ07tb5qINafDirF/EWwz2OKfEyKoGD2aLvXPUfmgL7uI9iar2CxV4Em47IN7Mp'
-access_token += '1emgnEYL2MTM5A9EjI/loVxtQCFMKMp4CvblOtWYQLkY841b4HM2Jc/hmp8kN0rAySTydyx1xHp2zlD'
-access_token += 'QS3tR/6e9jHZyHThycJ5UjfYQsr3LYtGEibE5UrgW131t1sAWgBbAAAAAAAfNx5IlLdAWZS3QFmIgQQ'
-access_token += 'ADgAxMzcuOTcuMTEuMjE4AAAAAAAtAGFwcGlkOi8vMTljZGMyNzItOGVmYi00NDBkLThmOGItMjExMTk4YTE4Nzc1AA=='
+access_token = 'EgBrAQMAAAAEgAAADAABqEL4HFfOSocPP9VNFz3muC29GsJRjHITM6pmXZXhFCq4muZHRgx/hNKQjAwy4ED3OZEG5eEs7onE+gQPGCUHOshp/34pOB4LjLFkAh4YdB0xV8F5sjJ/a6kUAGOmK5qFj/4X7IVe4HpPPoZI6tadfgFT0iF3cI+q2jhJMTQ3QXDyQEXx/hKUOf8kpxyXN1R1gjZQmsl1VJ9f+7ErzksbLYD4I05S5S8CfDZMdAAsuzGYfT1x8SYbP7m9bPsigF5PqGxlo3ZFRfqP2Je+Rn5H0xo9VHJB683QUjpmmuZ/WR0nq1BrLb0a5v5MmxIysnLsY6MSIuzDKIjwAo/X4sg0f1oAWgBaAAAAAAAfNx5I795EWe/eRFmIgQQADQAxMzcuOTcuOC4xMTgAAAAAAC0AYXBwaWQ6Ly8xOWNkYzI3Mi04ZWZiLTQ0MGQtOGY4Yi0yMTExOThhMTg3NzUA'
 
 
 def main():
@@ -67,22 +62,37 @@ def test():
         print audio_file.tag.album, '|',
         print audio_file.tag.title
         print
-        keyword = raw_input('Enter search keyword: ')
-        response = search(keyword)
+        keyword = '.'.join(music_file.split('.')[:-1])
+        try:
+            response = search(keyword)
+        except KeyError:
+            response = raw_input('Enter a keyword :')
+            response = search(response)
         for item in response:
             print item['Name'], '|',
             print item['Album'], '|',
             print item['Artists']
             print item['Albumart']
         keyword = input('Enter the index: ')
-        if keyword == 0:
+        if keyword == -1:
             continue
+        elif keyword == 0:
+            response = raw_input('Enter a keyword :')
+            response = search(response)
+            for item in response:
+                print item['Name'], '|',
+                print item['Album'], '|',
+                print item['Artists']
+                print item['Albumart']
+            keyword = input('Enter the index: ')
+            if keyword == -1:
+                continue
         keyword -= 1
         audio_file.tag.clear()
         audio_file.tag.artist = response[keyword]['Artists']
         audio_file.tag.album = response[keyword]['Album']
         audio_file.tag.title = response[keyword]['Name']
-        # audio_file.tag.genre = response[keyword]['Genres']
+        audio_file.tag.genre = response[keyword]['Genres']
         audio_file.tag.track_num = (1, None)
         r = requests.get(response[keyword]['Albumart'], stream=True)
         if r.status_code == 200:

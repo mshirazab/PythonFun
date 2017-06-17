@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 import re
 from pprint import pprint
 import json
+from Utils import PatternMatching
 
 search_button_id = 'btnSubmit'
 search_bar_id = 'animeName'
@@ -38,18 +39,6 @@ def search(keyword):
         'link': main_url + result['href']
     } for result in results]
     return results
-
-
-class PatternMatching(object):
-    def __init__(self, pattern):
-        self.__pattern = re.compile(pattern)
-
-    def __call__(self, driver):
-        response = driver.page_source
-        if len(re.findall(self.__pattern, response)) == 0:
-            return False
-        else:
-            return True
 
 
 def use_saved():
