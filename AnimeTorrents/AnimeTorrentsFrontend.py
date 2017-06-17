@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, flash
-from AnimeTorrentsBackend import Anime
-from requests.exceptions import ConnectionError
 import re
+
+from flask import Flask, render_template, request, redirect, flash
+from requests.exceptions import ConnectionError
+
+from AnimeTorrents.AnimeTorrentsBackend import Anime
+from Utils import HtmlBuilder
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -80,7 +83,7 @@ def search():
 
         refresh = HtmlBuilder()
         response = Anime.search(searched_keyword)
-        refresh.open_tag('div',{'class':'container-fluid'})
+        refresh.open_tag('div', {'class': 'container-fluid'})
         for link, anime in response.items():
             refresh.open_tag('div', {'class': 'panel row'})
             refresh.open_tag('div', {'class': 'col-xs-9'})
@@ -113,37 +116,5 @@ def add_anime():
     return redirect('/')
 
 
-class HtmlBuilder(object):
-    def __init__(self):
-        self.__html = u''
-        self.__stack = []
-
-    def __push(self, data):
-        self.__stack.append(data)
-
-    def __pop(self):
-        return self.__stack.pop()
-
-    def open_tag(self, tag, attrs):
-        data = '\n<' + tag  # opening tag
-        for right, left in attrs.items():
-            data += ' ' + right + '="' + left + '"'
-        data += '>'
-        self.__push(tag)
-
-        data = ''.join([i if ord(i) < 128 else ' ' for i in data])
-        self.__html += data
-
-    def close_tag(self):
-        tag = self.__pop()
-        self.__html += '</' + tag + '>\n'
-
-    def add_data(self, data):
-        self.__html += data
-
-    def get_html(self):
-        length = len(self.__stack)
-        while length > 0:
-            self.close_tag()
-            length = len(self.__stack)
-        return self.__html
+if __name__ == '__main__':
+    app.run()

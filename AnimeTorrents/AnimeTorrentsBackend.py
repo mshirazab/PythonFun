@@ -6,15 +6,7 @@ from requests.exceptions import ConnectionError
 from selenium import webdriver
 from selenium.common.exceptions import *
 from time import sleep
-
-
-class IO(object):
-    class Message(object):
-        error = '[ERROR]   '
-        added = '[ADDED]   '
-        message = '[MESSAGE] '
-        updated = '[UPDATED] '
-        searched = '[SEARCHED]'
+from Utils import IO
 
 
 class Anime(object):
