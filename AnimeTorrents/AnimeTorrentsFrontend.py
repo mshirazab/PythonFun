@@ -46,10 +46,6 @@ def episode_list():
     return text.get_html()
 
 
-has_refreshed = None
-searched_keyword = None
-
-
 @app.route('/')
 def main():
     refresh = HtmlBuilder()
@@ -67,7 +63,7 @@ def main():
 
 
 @app.route('/refresh')
-def refresh():
+def refresh_function():
     try:
         updates = Anime.update_all_episodes()
         animes = Anime.use_page_source()

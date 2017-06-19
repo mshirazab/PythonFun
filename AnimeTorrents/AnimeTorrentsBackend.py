@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from requests.exceptions import ConnectionError
 from selenium import webdriver
 from selenium.common.exceptions import *
-from time import sleep
 from Utils import IO
 
 
@@ -54,12 +53,12 @@ class Anime(object):
 
     @staticmethod
     def update_episodes(link):
-        driver = webdriver.PhantomJS()
+        driver = webdriver.Chrome('..x/chromedriver')
         driver.get(link)
         try:
             while True:
                 driver.find_element_by_class_name('morebutton').click()
-                sleep(4)
+
         except NoSuchElementException:
             pass
         except NoSuchWindowException:
