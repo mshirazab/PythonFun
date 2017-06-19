@@ -8,7 +8,7 @@ from os import listdir, remove
 
 groove_search_link = 'https://music.xboxlive.com/1/content/music/search'
 access_token_link = 'https://login.live.com/accesstoken.srf'
-access_token = 'EgBrAQMAAAAEgAAADAABqEL4HFfOSocPP9VNFz3muC29GsJRjHITM6pmXZXhFCq4muZHRgx/hNKQjAwy4ED3OZEG5eEs7onE+gQPGCUHOshp/34pOB4LjLFkAh4YdB0xV8F5sjJ/a6kUAGOmK5qFj/4X7IVe4HpPPoZI6tadfgFT0iF3cI+q2jhJMTQ3QXDyQEXx/hKUOf8kpxyXN1R1gjZQmsl1VJ9f+7ErzksbLYD4I05S5S8CfDZMdAAsuzGYfT1x8SYbP7m9bPsigF5PqGxlo3ZFRfqP2Je+Rn5H0xo9VHJB683QUjpmmuZ/WR0nq1BrLb0a5v5MmxIysnLsY6MSIuzDKIjwAo/X4sg0f1oAWgBaAAAAAAAfNx5I795EWe/eRFmIgQQADQAxMzcuOTcuOC4xMTgAAAAAAC0AYXBwaWQ6Ly8xOWNkYzI3Mi04ZWZiLTQ0MGQtOGY4Yi0yMTExOThhMTg3NzUA'
+access_token = 'EgBrAQMAAAAEgAAADAABukHoyu4JEdJSI+OCNNA8j1fjuvZMPyMj7kAJroW8MVT8MKvwfZSLRtB5qBZGrublOLkSr7Z+I4mEX+tgFsUj5c2bctddZ8YE2SgtAKPIShAHDBKdxkReSvhiYq0WJ4Q/Ahxk9ihKGaWfzGCEXMfmY7nM7uSK4ufBlEtCTkYAM2Hkpr/hNSVML7GJhaHNjcYVg3yVShXyDksSlMpoEgVpXPMdUf4ymobdBH7zOMsIuVc73HD81ALgjEdZeOJD/DLPghf/LNccm3bJbDKwDgn/1MY7dWrIJLfs5WidV2EL3lIhcju4V4/MD//B4USghIRe3JMLYjjrBq9q7/EzHm3iAVoAWgBaAAAAAAAfNx5IqfZFWan2RVmIgQQADQAxMzcuOTcuOC4yNDYAAAAAAC0AYXBwaWQ6Ly8xOWNkYzI3Mi04ZWZiLTQ0MGQtOGY4Yi0yMTExOThhMTg3NzUA'
 
 
 def main():
@@ -133,6 +133,7 @@ def search(keyword):
         'Host': 'music.xboxlive.com'
     }
     response = requests.get(groove_search_link, params=params, headers=headers)
+    print response.text
     json_data = loads(response.text)['Tracks']['Items']
     data_needed = []
     for item in json_data:
@@ -142,7 +143,8 @@ def search(keyword):
             'Albumart': item['Album']['ImageUrl'],
             'Genres': ', '.join(item['Genres']),
             'Explicit': item['IsExplicit'],
-            'Artists': ', '.join([i['Artist']['Name'] for i in item['Artists']])
+            'Artists': [i['Artist']['Name'] for i in item['Artists']]
+            # 'Artists': ', '.join([i['Artist']['Name'] for i in item['Artists']])
         }
         data_needed.append(new_item)
     return data_needed
